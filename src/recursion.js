@@ -7,26 +7,71 @@
 // Example: 5! = 5 x 4 x 3 x 2 x 1 = 120
 // factorial(5); // 120
 var factorial = function(n) {
+  if (n < 0) {
+    return null;
+  } else if (n === 0) {
+    return 1;
+  } else {
+    return n * factorial(n - 1);
+  }
 };
 
 // 2. Compute the sum of an array of integers.
 // sum([1,2,3,4,5,6]); // 21
 var sum = function(array) {
+  if (array.length === 0) {
+    return 0;
+  }
+
+  return array[0] + sum(array.slice(1));
 };
 
 // 3. Sum all numbers in an array containing nested arrays.
 // arraySum([1,[2,3],[[4]],5]); // 15
 var arraySum = function(array) {
+  var result = 0;
+
+  if (array.length === 0) {
+    return 0;
+  }
+
+  array.forEach(function(item) {
+    if (!Array.isArray(item)) {
+      result += item;
+    } else {
+      result += arraySum(item);
+    }
+  });
+
+  return result;
 };
 
 // 4. Check if a number is even.
 var isEven = function(n) {
+  if (Math.abs(n) === 0) {
+    return true;
+  } else if (Math.abs(n) === 1) {
+    return false;
+  } else {
+    return isEven(Math.abs(n) - 2);
+  }
 };
 
 // 5. Sum all integers below a given integer.
 // sumBelow(10); // 45
 // sumBelow(7); // 21
 var sumBelow = function(n) {
+  var absolute = Math.abs(n);
+
+  if (n === 0) {
+    return 0;
+  }
+
+  if (n < 0) {
+    return -((absolute - 1) + sumBelow(absolute - 1));
+  } else {
+    return ((n - 1) + sumBelow(n - 1));
+  }
 };
 
 // 6. Get the integers within a range (x, y).
@@ -129,6 +174,19 @@ var rMap = function(array, callback) {
 // countKeysInObj(obj, 'r') // 1
 // countKeysInObj(obj, 'e') // 2
 var countKeysInObj = function(obj, key) {
+  var count = 0;
+
+  for (var i in obj) {
+    if (i === key) {
+      count++;
+    }
+
+    if (typeof obj[i] === 'object') {
+      count = count + countKeysInObj(obj[i], key);
+    }
+  }
+
+  return count;
 };
 
 // 23. Write a function that counts the number of times a value occurs in an object.
@@ -136,11 +194,36 @@ var countKeysInObj = function(obj, key) {
 // countValuesInObj(obj, 'r') // 2
 // countValuesInObj(obj, 'e') // 1
 var countValuesInObj = function(obj, value) {
+  var count = 0;
+
+  for (var key in obj) {
+    if (obj[key] === value) {
+      count++;
+    }
+
+    if (typeof obj[key] === 'object') {
+      count = count + countValuesInObj(obj[key], value);
+    }
+  }
+
+  return count;
 };
 
 // 24. Find all keys in an object (and nested objects) by a provided name and rename
 // them to a provided new name while preserving the value stored at that key.
 var replaceKeysInObj = function(obj, oldKey, newKey) {
+  for (var key in obj) {
+    if (key === oldKey) {
+      obj[newKey] = obj[key];
+      delete obj[key];
+    }
+
+    if (typeof obj[key] === 'object') {
+      replaceKeysInObj(obj[key], oldKey, newKey);
+    }
+  }
+
+  return obj;
 };
 
 // 25. Get the first n Fibonacci numbers. In the Fibonacci sequence, each subsequent
